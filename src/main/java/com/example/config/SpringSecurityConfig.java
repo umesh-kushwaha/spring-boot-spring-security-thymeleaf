@@ -1,12 +1,17 @@
 package com.example.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.ldap.DefaultSpringSecurityContextSource;
+import org.springframework.security.ldap.authentication.BindAuthenticator;
+import org.springframework.security.ldap.authentication.LdapAuthenticationProvider;
+import org.springframework.security.ldap.authentication.LdapAuthenticator;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 @Configuration
@@ -15,6 +20,26 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AccessDeniedHandler accessDeniedHandler;
+
+	@Autowired
+	private LdapAuthenticationProvider ldapAuthenticationProvider;
+
+	/*
+	 * @Value("${authentication.type}") private String authenticationType;
+	 * 
+	 * @Value("${ldap.server}") private String server;
+	 * 
+	 * @Value("${ldap.root_dn}") private String rootDn;
+	 * 
+	 * @Value("${ldap.user_search_base}") private String userSearchBase;
+	 * 
+	 * @Value("${ldap.user_search_filter}") private String userSearchFilter;
+	 */
+
+	private static final String LDAP_SERVER = "ldap://localhost:10389";
+	private static final String LDAP_ROOT_DN = "dc=example,dc=com";
+	private static final String LDAP_USER_SEARCH_BASE = "ou=people";
+	private static final String LDAP_USER_SEARCH_FILTER = "uid={0}";
 
     // roles admin allow to access /admin/**
     // roles user allow to access /user/**
@@ -45,10 +70,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth.inMemoryAuthentication()
-				.withUser("hiren").password("password").roles("USER")
-                .and()
-                .withUser("admin").password("password").roles("ADMIN");
+		if (true /*
+					 * || AuthenticationType.LDAP.equals(AuthenticationType.valueOf
+					 * (authenticationType))
+					 */) {
+			auth.authenticationProvider(ldapAuthenticationProvider);
+		} else {
+			auth.inMemoryAuthentication().withUser("hiren").password("password").roles("USER").and().withUser("admin")
+					.password("password").roles("ADMIN");
+		}
     }
 
     
@@ -58,5 +88,26 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
     }
+
+	@Bean
+	public LdapAuthenticator ldapAuthenticator() {
+		DefaultSpringSecurityContextSource contextSource = new DefaultSpringSecurityContextSource(
+				LDAP_SERVER + "/" + LDAP_ROOT_DN);
+		// contextSource.setUserDn(ldapConfigParameters.getManagerDn());
+		// contextSource.setPassword(ldapConfigParameters.getManagerPassword());
+		contextSource.setReferral("follow");
+		contextSource.setCacheEnvironmentProperties(true);
+		contextSource.setAnonymousReadOnly(false);
+		contextSource.setPooled(true);
+		contextSource.afterPropertiesSet();
+		BindAuthenticator bindAuthenticator = new BindAuthenticator(contextSource);
+		bindAuthenticator.setUserDnPatterns(new String[] { LDAP_USER_SEARCH_FILTER + "," + LDAP_USER_SEARCH_BASE });
+		return bindAuthenticator;
+	}
+
+	@Bean
+	public LdapAuthenticationProvider ldapAuthenticationProvider(LdapAuthenticator ldapAuthenticator) {
+		return new LdapAuthenticationProvider(ldapAuthenticator);
+	}
 
 }
