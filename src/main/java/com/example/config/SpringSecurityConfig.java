@@ -72,11 +72,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public LdapAuthenticator ldapAuthenticator() {
-
-		System.out.println("----------------------------------");
-		System.out.println("Authentication type: " + authenticationType + " server: " + server);
-		System.out.println("----------------------------------");
-
 		DefaultSpringSecurityContextSource contextSource = new DefaultSpringSecurityContextSource(
 				server + "/" + rootDn);
 		// contextSource.setUserDn(ldapConfigParameters.getManagerDn());
