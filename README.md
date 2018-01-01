@@ -30,4 +30,4 @@ Spring security configuration is provided in `SpringSecurityConfig` file.
     }
 
 
-There are two types of authentication mechanism are provided 1). DAOAuthentication and 2). LDAPAuthentication. For these two we have extednded AuthenticationProvider implementation of their respective appropriate classes. Which type of authentication mechanism will be used are described by `authentication.type` property in application.properties (i.e OAUTH for DOA and LDAP for LDAP).
+There are two types of authentication mechanism are provided 1). DAOAuthentication and 2). LDAPAuthentication. For these two we have extednded AuthenticationProvider implementation of their respective appropriate classes. Which type of authentication mechanism will be used are described by `authentication.type` property in application.properties (i.e `authentication.type=OAUTH` for DOA and `authentication.type=LDAP` for LDAP).
