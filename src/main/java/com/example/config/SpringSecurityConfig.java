@@ -15,6 +15,8 @@ import org.springframework.security.ldap.authentication.LdapAuthenticationProvid
 import org.springframework.security.ldap.authentication.LdapAuthenticator;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
+import com.example.service.UserService;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -40,6 +42,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private LdapAuthenticationProvider ldapAuthenticationProvider;
 
+	@Autowired
+	private UserService userService;
 
 	// roles admin allow to access /admin/**
 	// roles user allow to access /user/**
@@ -60,8 +64,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		if (AuthenticationType.LDAP.equals(AuthenticationType.valueOf(authenticationType))) {
 			auth.authenticationProvider(ldapAuthenticationProvider);
 		} else {
-			auth.inMemoryAuthentication().withUser("hiren").password("password").roles("USER").and().withUser("admin")
-					.password("password").roles("ADMIN");
+			auth.userDetailsService(userService);
+			// auth.inMemoryAuthentication().withUser("hiren").password("password").roles("USER").and().withUser("admin")
+			// .password("password").roles("ADMIN");
 		}
 	}
 
