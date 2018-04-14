@@ -64,9 +64,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		if (AuthenticationType.LDAP.equals(AuthenticationType.valueOf(authenticationType))) {
 			auth.authenticationProvider(ldapAuthenticationProvider);
 		} else {
-			auth.userDetailsService(userService);
-			// auth.inMemoryAuthentication().withUser("hiren").password("password").roles("USER").and().withUser("admin")
-			// .password("password").roles("ADMIN");
+//			auth.userDetailsService(userService);
+			 auth.inMemoryAuthentication().withUser("hiren").password("password").roles("USER").and().withUser("admin")
+			 .password("password").roles("ADMIN");
 		}
 	}
 
