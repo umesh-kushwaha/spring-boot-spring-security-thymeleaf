@@ -45,9 +45,6 @@ public class User {
 	@Column(name = "username", columnDefinition = "TEXT")
 	private String username;
 
-	@Column(name = "password_expiration_date")
-	private Long passwordExpirationDate;
-
 	@Column(name = "password_expiry_days")
 	private Integer passwordExpiryDays;
 
@@ -138,14 +135,6 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public Long getPasswordExpirationDate() {
-		return passwordExpirationDate;
-	}
-
-	public void setPasswordExpirationDate(Long passwordExpirationDate) {
-		this.passwordExpirationDate = passwordExpirationDate;
 	}
 
 	public Integer getPasswordExpiryDays() {

@@ -1,0 +1,2 @@
+INSERT INTO user(user_id, email, first_name, last_name, is_active, is_deleted, mobile_no, password, role, username, password_expiry_days, address, is_locked, attampt)
+VALUES (1, 'hiren@gmail.com', 'hiren', 'pandit', 1, 0, '9990999099', 'hiren@123', 'ADMIN', 'hiren', 2, 'Ahmedbad', 0, 0);

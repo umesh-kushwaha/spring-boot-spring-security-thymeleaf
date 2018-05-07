@@ -15,7 +15,7 @@ import com.example.entity.User;
 import com.example.repository.UserRepository;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -37,10 +37,13 @@ public class UserService implements UserDetailsService {
 		}
 
 		grantedAuthorities = new ArrayList<>();
-		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("USER");
+		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getRole());
 		grantedAuthorities.add(grantedAuthority);
 
-		Long passwordExpiration = user.getPasswordExpirationDate();
+
+		// password expiry logic
+
+		/*Long passwordExpiration = user.getPasswordExpirationDate();
 		if (passwordExpiration != null) {
 			Long currTimeStamp = System.currentTimeMillis();
 			if (currTimeStamp < passwordExpiration) {
@@ -50,7 +53,7 @@ public class UserService implements UserDetailsService {
 				// throw new CustomInvalidRequestException("Your Credential has
 				// been expired");
 			}
-		}
+		}*/
 
 		return new org.springframework.security.core.userdetails.User(user.getUsername(),
 				user.getPassword() == null ? "" : user.getPassword(), true, true, true, !user.getIsLocked(),

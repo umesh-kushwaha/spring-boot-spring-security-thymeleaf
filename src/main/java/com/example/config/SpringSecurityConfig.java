@@ -15,7 +15,7 @@ import org.springframework.security.ldap.authentication.LdapAuthenticationProvid
 import org.springframework.security.ldap.authentication.LdapAuthenticator;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import com.example.service.UserService;
+import com.example.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +43,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	private LdapAuthenticationProvider ldapAuthenticationProvider;
 
 	@Autowired
-	private UserService userService;
+	private UserDetailsServiceImpl userDetailsServiceImpl;
 
 	// roles admin allow to access /admin/**
 	// roles user allow to access /user/**
@@ -52,7 +52,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.csrf().disable().headers().frameOptions().disable();
-		http.authorizeRequests().antMatchers("/", "/home", "/about").permitAll().antMatchers("/admin/**")
+		http.authorizeRequests().antMatchers("/", "/home", "/about").permitAll().antMatchers("/admin")
 				.hasAnyRole("ADMIN").antMatchers("/user/**").hasAnyRole("USER").anyRequest().authenticated().and()
 				.formLogin().loginPage("/login").permitAll().and().logout().permitAll().and().exceptionHandling()
 				.accessDeniedHandler(accessDeniedHandler);
@@ -64,9 +64,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		if (AuthenticationType.LDAP.equals(AuthenticationType.valueOf(authenticationType))) {
 			auth.authenticationProvider(ldapAuthenticationProvider);
 		} else {
-//			auth.userDetailsService(userService);
-			 auth.inMemoryAuthentication().withUser("hiren").password("password").roles("USER").and().withUser("admin")
-			 .password("password").roles("ADMIN");
+			auth.userDetailsService(userDetailsServiceImpl);
+//			 auth.inMemoryAuthentication().withUser("hiren").password("password").roles("USER").and().withUser("admin")
+//			 .password("password").roles("ADMIN");
 		}
 	}
 

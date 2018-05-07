@@ -8,6 +8,6 @@ import com.example.entity.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-	public User findByUsernameIgnoreCaseAndIsActiveTrueAndIsDeletedFalse(String username);
+	User findByUsernameIgnoreCaseAndIsActiveTrueAndIsDeletedFalse(String username);
 
 }

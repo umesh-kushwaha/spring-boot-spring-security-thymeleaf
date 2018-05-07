@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway);
+
 h1{
 	color:#0000FF;
 }
@@ -8,4 +10,8 @@ h2{
 
 footer{
     margin-top:60px;
+}
+
+body {
+	font-family: Raleway !important;
 }
